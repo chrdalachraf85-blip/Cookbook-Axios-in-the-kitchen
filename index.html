@@ -1,20 +1,45 @@
-<!DOCTYPE html><<html lang="en">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cookbook — Toutes les recettes</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="node_modules/axios/dist/axios.min.js"></script>
 </head>
-<body>
+<body class="min-h-screen bg-[#faf7ef] text-[#172b17]">
+    <header class="border-b border-[#e6dfd2] bg-[#fffdf8]/90">
+        <div class="relative mx-auto flex max-w-[1600px] items-center justify-center px-6 py-4">
+            <h1 class="font-serif text-4xl font-bold tracking-tight">Cookbook</h1>
+            <button type="button" id="addbtn" class="absolute right-6 inline-flex items-center gap-3 rounded-2xl bg-[#173116] px-6 py-3 text-lg text-white hover:bg-[#254522]">
+                <span aria-hidden="true" class="text-3xl leading-none">+</span>
+                <span>Proposer une recette</span>
+            </button>
+        </div>
+    </header>
 
+    <main class="mx-auto max-w-[1600px] px-6 py-10">
+        <div class="mx-auto max-w-5xl">
+            <div class="mb-7 flex items-center gap-4">
+                <span aria-hidden="true" class="h-[2px] flex-1 bg-[#8c9a73]"></span>
+                <h2 class="font-serif text-center text-4xl font-bold md:text-6xl">Toutes les recettes</h2>
+                <span aria-hidden="true" class="h-[2px] flex-1 bg-[#8c9a73]"></span>
+            </div>
 
+            <label class="mx-auto flex max-w-4xl items-center gap-4 rounded-2xl border border-[#d9d0c3] bg-white/60 px-6 py-4 shadow-sm">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-7 w-7 shrink-0 text-[#52644f]">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m16 16 4 4"></path>
+                </svg>
+                <input id="recipe-search" type="search" placeholder="Rechercher une recette..." class="w-full bg-transparent text-xl outline-none placeholder:text-gray-500">
+            </label>
+            <p id="recipe-count" class="mt-5 text-center text-xl text-[#66745b]">Chargement des recettes...</p>
+        </div>
 
-    
-    
+        <section id="recipe-list" aria-label="Liste des recettes" class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"></section>
+        <p id="empty-message" class="hidden py-12 text-center text-lg text-[#66745b]">Aucune recette trouvée.</p>
+    </main>
 
-    
-    
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
