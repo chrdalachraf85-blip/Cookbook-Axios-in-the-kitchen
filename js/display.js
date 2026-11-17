@@ -1,3 +1,4 @@
+
 export function displayRecipes(recipes) {
   const recipeList = document.querySelector("#recipe-list");
   const recipeCount = document.querySelector("#recipe-count");
@@ -13,6 +14,7 @@ export function displayRecipes(recipes) {
     const photo = document.createElement("img");
     photo.src = recipe.image;
     photo.alt = recipe.name;
+    
     photo.className = "h-52 w-full object-cover";
 
     const details = document.createElement("div");
@@ -147,11 +149,4 @@ export function popupform() {
 }
 
 export const search = document.querySelector("#recipe-search");
-
-
-
-
-
-
-
 

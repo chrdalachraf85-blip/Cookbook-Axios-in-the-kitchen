@@ -26,13 +26,14 @@
                 <span aria-hidden="true" class="h-[2px] flex-1 bg-[#8c9a73]"></span>
             </div>
 
-            <label class="mx-auto flex max-w-4xl items-center gap-4 rounded-2xl border border-[#d9d0c3] bg-white/60 px-6 py-4 shadow-sm">
+            <form id="recipe-search-form" class="mx-auto flex max-w-4xl items-center gap-4 rounded-2xl border border-[#d9d0c3] bg-white/60 px-4 py-3 shadow-sm">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-7 w-7 shrink-0 text-[#52644f]">
                     <circle cx="11" cy="11" r="7"></circle>
                     <path d="m16 16 4 4"></path>
                 </svg>
-                <input id="recipe-search" type="search" placeholder="Rechercher une recette..." class="w-full bg-transparent text-xl outline-none placeholder:text-gray-500">
-            </label>
+                <input id="recipe-search" type="search" aria-label="Rechercher une recette" placeholder="Rechercher une recette..." class="w-full bg-transparent text-xl outline-none placeholder:text-gray-500">
+                <button type="submit" class="shrink-0 rounded-xl bg-[#173116] px-5 py-3 font-semibold text-white hover:bg-[#254522]">Rechercher</button>
+            </form>
             <p id="recipe-count" class="mt-5 text-center text-xl text-[#66745b]">Chargement des recettes...</p>
         </div>
 
