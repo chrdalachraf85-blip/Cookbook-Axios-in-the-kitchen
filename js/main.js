@@ -1,5 +1,5 @@
 import { getdata, searchdata } from "./apicalls.js";
-import { displayRecipes, popupform, search } from "./display.js";
+import { displayRecipes, popupform, search, showerror } from "./display.js";
 
 let allrecettes = [];
 
@@ -8,8 +8,8 @@ getdata()
     allrecettes = data.recipes;
     displayRecipes(data.recipes);
   })
-  .catch((error) => {
-    console.error("Could not load recipes:", error);
+  .catch(() => {
+    showerror("Could not load recipes");
   });
 
 document.querySelector("#addbtn").addEventListener("click", () => {
@@ -38,8 +38,20 @@ document
     searchdata(input)
       .then((data) => {
         displayRecipes(data.recipes);
+        if (!data.recipes || data.recipes.length === 0) {
+          showerror("No Recipes Found");
+          document
+            .querySelector("#btnrefresh")
+            .addEventListener("click", () => {
+              getdata().then((data) => {
+                allrecettes = data.recipes;
+                displayRecipes(data.recipes);
+              });
+            });
+        }
       })
       .catch((error) => {
+        showerror(error);
         console.error("Could not search recipes:", error);
       });
   });
