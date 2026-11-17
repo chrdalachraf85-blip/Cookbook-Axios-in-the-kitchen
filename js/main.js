@@ -1,5 +1,5 @@
-import { getdata } from "./apicalls.js";
-import { displayRecipes, popupform, search, filteri } from "./display.js";
+import { getdata, searchdata } from "./apicalls.js";
+import { displayRecipes, popupform, search } from "./display.js";
 
 let allrecettes = [];
 
@@ -24,8 +24,22 @@ document.querySelector("#addbtn").addEventListener("click", () => {
   });
 });
 
+document
+  .querySelector("#recipe-search-form")
+  .addEventListener("submit", (event) => {
+    event.preventDefault();
 
+    const input = search.value.trim();
+    if (!input) {
+      displayRecipes(allrecettes);
+      return;
+    }
 
-
-
-
+    searchdata(input)
+      .then((data) => {
+        displayRecipes(data.recipes);
+      })
+      .catch((error) => {
+        console.error("Could not search recipes:", error);
+      });
+  });
