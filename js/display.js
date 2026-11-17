@@ -1,7 +1,7 @@
 
+const recipeList = document.querySelector("#recipe-list");
+const recipeCount = document.querySelector("#recipe-count");
 export function displayRecipes(recipes) {
-  const recipeList = document.querySelector("#recipe-list");
-  const recipeCount = document.querySelector("#recipe-count");
 
   recipeList.replaceChildren();
   recipeCount.textContent = `${recipes.length} recettes`;
@@ -150,3 +150,22 @@ export function popupform() {
 
 export const search = document.querySelector("#recipe-search");
 
+export function showerror(error) {
+  const div = document.createElement("div");
+  div.className =
+    "col-span-full mx-auto flex min-h-[50vh] w-full max-w-2xl flex-col items-center justify-center gap-6 px-4 text-center sm:gap-8";
+  const p = document.createElement("p");
+  p.className = "text-2xl font-semibold leading-relaxed text-[#718778] sm:text-4xl";
+  p.textContent = error;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "btnrefresh"
+  btn.className =
+    "w-full rounded-xl bg-[#17452f] px-8 py-4 text-xl font-semibold text-white transition hover:bg-[#123a27] focus:outline-none focus:ring-2 focus:ring-[#17452f] focus:ring-offset-2 sm:w-auto sm:text-2xl";
+  btn.textContent = "Réessayer";
+
+  div.append(p,btn)
+  recipeList.appendChild(div)
+
+
+}
