@@ -52,11 +52,11 @@ export function popupform() {
   const div = document.createElement("div");
   div.className =
     "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
-  div.id = "form";
+  div.id = "formback";
   const modal = document.createElement("div");
   modal.className =
     "relative w-full max-w-3xl rounded-3xl bg-white p-8 shadow-2xl sm:p-12";
-
+  modal.id = "formback"
   const closeButton = document.createElement("button");
   closeButton.type = "button";
   closeButton.textContent = "×";
@@ -71,6 +71,7 @@ export function popupform() {
 
   const form = document.createElement("form");
   form.className = "space-y-5";
+  form.id = "rform"
 
   const makeField = (labelText, input) => {
     const label = document.createElement("label");
@@ -117,6 +118,7 @@ export function popupform() {
   timeInput.type = "number";
   timeInput.name = "prepTimeMinutes";
   timeInput.min = "1";
+  timeInput.max = "300";
   timeInput.placeholder = "Ex. 45";
   timeInput.required = true;
   form.appendChild(makeField("Temps de préparation (min)", timeInput));
