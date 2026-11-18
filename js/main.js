@@ -1,6 +1,6 @@
 import { getdata, searchdata, postRecipe } from "./apicalls.js";
 import { displayRecipes, popupform, search, showerror } from "./display.js";
-import { valider } from "./validation.js";
+import { getFields, validateField } from "./validation.js";
 let allrecettes = [];
 
 getdata()
@@ -17,41 +17,47 @@ document.querySelector("#addbtn").addEventListener("click", (e) => {
   popupform();
   const forma = document.querySelector("#rform");
   // const form = document.querySelector("#form");
-  // const formaback = document.querySelector("#formback");
+  const formaback = document.querySelector("#formback");
   forma.noValidate = true;
-  forma.addEventListener("submit", (e) => {
-    e.preventDefault;
-    if (!valider(forma)) return;
+  // Build the configured field list once so live and submit checks share rules.
+  const fields = getFields(forma);
+
+  // Recheck fields while typing and when a select/input commits a change.
+  fields.forEach((field) => {
+    field.input.addEventListener("input", () => validateField(field));
+    field.input.addEventListener("change", () => validateField(field));
+  });
+
+  forma.addEventListener("submit", async (e) => {
+    const submit = forma.querySelector("#ajouter");
+
+    e.preventDefault();
+
+    // Check all configured fields and focus the first one that is invalid.
+    const fieldsValid = fields.map(validateField);
+    const firstInvalid = fieldsValid.indexOf(false);
+    if (firstInvalid !== -1) {
+      fields[firstInvalid].input.focus();
+      return;
+    }
+
     const recipe = {
-      name: recipeForm.elements.name.value.trim(),
-      cuisine: recipeForm.elements.cuisine.value.trim(),
-      difficulty: recipeForm.elements.difficulty.value,
-      prepTimeMinutes: Number(recipeForm.elements.prepTimeMinutes.value),
+      name: forma.elements.name.value.trim(),
+      cuisine: forma.elements.cuisine.value.trim(),
+      difficulty: forma.elements.difficulty.value,
+      prepTimeMinutes: Number(forma.elements.prepTimeMinutes.value),
     };
+    submit.disabled = true;
+    submit.textContent = "sending...";
 
-
-
-  const submitButton = forma.querySelector('button[type="submit"]');
-  submitButton.disabled = true;
-
-
-    postRecipe(recipe)
-    .then((data)=> {
-      
-    })
-
-
-  // try {
-  //   const response =  postRecipe(recipe);
-  //   console.log("Recipe returned by the API:", response);
-  // } catch (error) {
-  //   console.error("Could not add recipe:", error);
-  // } finally {
-  //   submitButton.disabled = false;
-  // }
-
-
-});
+    try {
+      await postRecipe(recipe);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Ajouter";
+    }
   });
 
   document.querySelector("#close").addEventListener("click", () => {

@@ -1,45 +1,45 @@
-const form = document.querySelector("#recipe-search-form")
+// Describe each form control once, following the field-config pattern.
+export function getFields(form) {
+  return [
+    {
+      input: form.elements.name,
+      regex: /^[\p{L}][\p{L} '\u2019-]{0,59}$/u,
+      errorMessage: "Use 1–60 letters, spaces, apostrophes, or hyphens. Numbers are not allowed.",
+    },
+    {
+      input: form.elements.cuisine,
+      regex: /^[\p{L}][\p{L} '\u2019-]*$/u,
+      errorMessage: "Use letters, spaces, apostrophes, or hyphens.",
+    },
+    {
+      input: form.elements.difficulty,
+      isValid: (value) => ["Easy", "Medium", "Hard"].includes(value),
+      errorMessage: "Choose a difficulty.",
+    },
+    {
+      input: form.elements.prepTimeMinutes,
+      isValid: (value) => /^\d+$/.test(value) && Number(value) >= 1 && Number(value) <= 300,
+      errorMessage: "Enter a whole number from 1 to 300 minutes.",
+    },
+  ];
+}
 
-const Name = document.querySelector("#recipe-name");      
-const Cuisine =document.querySelector("#recipe-cuisine");   
-const diff = document.querySelector("#recipe-difficulty"); 
-const time = document.querySelector("#recipe-prep-time");  
+// Update the field's visual state and message, and return whether it is valid.
+export function validateField(field) {
+  const value = field.input.value.trim();
+  const valid = field.isValid
+    ? field.isValid(value)
+    : field.regex.test(value);
+  const box = field.input.closest(".champ");
+  const message = box.querySelector(".message");
 
-
-export function valider(form){
-  const fields = {
-    name: form.querySelector('[name="name"]'),
-    cuisine: form.querySelector('[name="cuisine"]'),
-    difficulty: form.querySelector('[name="difficulty"]'),
-    time: form.querySelector('[name="prepTimeMinutes"]'),
-  };
-
-  const valid = {
-    name: /^[\p{L}\p{N}][\p{L}\p{N} '\u2019-]{0,59}$/u.test(fields.name.value.trim()),
-    cuisine: /^[\p{L}][\p{L} '\u2019-]*$/u.test(fields.cuisine.value.trim()),
-    difficulty: ["Easy", "Medium", "Hard"].includes(fields.difficulty.value),
-    time: /^\d+$/.test(fields.time.value) && Number(fields.time.value) >= 1 && Number(fields.time.value) <= 300,
-  };
-
-  form.querySelectorAll("[data-validation-error]").forEach((message) => message.remove());
-  const messages = {
-    name: "Name must be 1–60 characters; use letters, numbers, spaces, apostrophes, or hyphens.",
-    cuisine: "Cuisine must use letters, spaces, apostrophes, or hyphens.",
-    difficulty: "Choose a difficulty.",
-    time: "Time must be a whole number from 1 to 300 minutes.",
-  };
-
-  Object.entries(fields).forEach(([key, field]) => {
-    field.removeAttribute("aria-invalid");  
-    if (!valid[key]) {
-      field.setAttribute("aria-invalid", "true");
-      const message = document.createElement("p");
-      message.dataset.validationError = "true";
-      message.className = "mt-1 text-sm text-red-700";
-      message.textContent = messages[key];
-      field.parentElement.appendChild(message);
-    }
-  });
-
-  return Object.values(valid).every(Boolean);
+  // Apply Tailwind color utilities directly instead of status-name classes.
+  field.input.classList.remove("border-green-500", "border-red-500");
+  message.classList.remove("text-green-500", "text-red-500");
+  field.input.classList.add(valid ? "border-green-500" : "border-red-500");
+  message.classList.add(valid ? "text-green-500" : "text-red-500");
+  message.classList.remove("hidden");
+  message.textContent = valid ? "Valide." : field.errorMessage;
+  field.input.setAttribute("aria-invalid", String(!valid));
+  return valid;
 }

@@ -56,7 +56,7 @@ export function popupform() {
   const modal = document.createElement("div");
   modal.className =
     "relative w-full max-w-3xl rounded-3xl bg-white p-8 shadow-2xl sm:p-12";
-  modal.id = "formback"
+
   const closeButton = document.createElement("button");
   closeButton.type = "button";
   closeButton.textContent = "×";
@@ -73,14 +73,21 @@ export function popupform() {
   form.className = "space-y-5";
   form.id = "rform"
 
+  // Wrap each control and its live validation message in a .champ container.
   const makeField = (labelText, input) => {
+    const box = document.createElement("div");
+    box.className = "champ";
     const label = document.createElement("label");
     label.className = "block font-semibold text-gray-900";
     label.appendChild(document.createTextNode(labelText));
     input.className =
       "mt-2 w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-lg font-normal outline-none focus:border-green-700";
     label.appendChild(input);
-    return label;
+    const message = document.createElement("p");
+    message.className = "message hidden mt-1 text-sm";
+    message.setAttribute("aria-live", "polite");
+    box.append(label, message);
+    return box;
   };
 
   const nameInput = document.createElement("input");
@@ -134,6 +141,7 @@ export function popupform() {
 
   const addButton = document.createElement("button");
   addButton.type = "submit";
+  addButton.id = 'ajouter'
   addButton.textContent = "Ajouter";
   addButton.className =
     "rounded-lg bg-green-700 px-7 py-3 font-semibold text-white";

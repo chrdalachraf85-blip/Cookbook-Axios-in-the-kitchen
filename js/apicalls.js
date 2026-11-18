@@ -14,5 +14,7 @@ export async function searchdata(search) {
 
 export async function postRecipe(object) {
   const res = await api.post("/recipes/add", object);
-  return res.data;
+  console.log("Status:", res.status);
+  console.log("Created post:", res.data);
+
 }
