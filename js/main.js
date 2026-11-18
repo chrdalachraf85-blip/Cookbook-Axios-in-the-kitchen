@@ -1,6 +1,6 @@
-import { getdata, searchdata } from "./apicalls.js";
-import { displayRecipes, popupform, search, showerror } from "./display.js";
-
+import { getdata, searchdata, postRecipe } from "./apicalls.js";
+import { displayRecipes, popupform, search, showerror, succedmsg } from "./display.js";
+import { getFields, validateField } from "./validation.js";
 let allrecettes = [];
 
 getdata()
@@ -12,15 +12,60 @@ getdata()
     showerror("Could not load recipes");
   });
 
-document.querySelector("#addbtn").addEventListener("click", () => {
+document.querySelector("#addbtn").addEventListener("click", (e) => {
+  e.preventDefault;
   popupform();
-  const forma = document.querySelector("#form");
+  const forma = document.querySelector("#rform");
+  const formaback = document.querySelector("#formback");
+  forma.noValidate = true;
+  const fields = getFields(forma);
+
+  fields.forEach((field) => {
+    field.input.addEventListener("input", () => validateField(field));
+    field.input.addEventListener("change", () => validateField(field));
+  });
+
+  forma.addEventListener("submit", async (e) => {
+    const submit = forma.querySelector("#ajouter");
+
+    e.preventDefault();
+
+    const fieldsValid = fields.map(validateField);
+    const firstInvalid = fieldsValid.indexOf(false);
+    if (firstInvalid !== -1) {
+      fields[firstInvalid].input.focus();
+      return;
+    }
+
+    const recipe = {
+      name: forma.elements.name.value.trim(),
+      cuisine: forma.elements.cuisine.value.trim(),
+      difficulty: forma.elements.difficulty.value,
+      prepTimeMinutes: Number(forma.elements.prepTimeMinutes.value),
+    };
+    submit.disabled = true;
+    submit.textContent = "sending...";
+
+    try {
+      await postRecipe(recipe);
+      allrecettes.unshift(recipe);
+      displayRecipes(allrecettes);
+      formaback.remove();
+      succedmsg();
+    } catch (error) {
+      console.error("Could not add recipe:", error);
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Ajouter";
+    }
+
+  });
 
   document.querySelector("#close").addEventListener("click", () => {
-    forma.remove();
+    formaback.remove();
   });
   document.querySelector("#cancel").addEventListener("click", () => {
-    forma.remove();
+    formaback.remove();
   });
 });
 

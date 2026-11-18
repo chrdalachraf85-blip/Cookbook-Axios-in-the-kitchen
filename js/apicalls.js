@@ -11,3 +11,10 @@ export async function searchdata(search) {
     const res = await api.get("/recipes/search", {params : {limit : 12 , q:search}})
     return res.data
 }
+
+export async function postRecipe(object) {
+  const res = await api.post("/recipes/add", object);
+  console.log("Status:", res.status);
+  console.log("Created post:", res.data);
+
+}

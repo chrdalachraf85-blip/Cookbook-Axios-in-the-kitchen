@@ -9,40 +9,50 @@ export function displayRecipes(recipes) {
   recipes.forEach((recipe) => {
     const card = document.createElement("article");
     card.className =
-      "overflow-hidden rounded-xl border border-green-200 bg-white shadow-sm";
+      "overflow-hidden rounded-[2rem] border-[3px] border-[#11100f] bg-[#f8eee3] shadow-[8px_9px_0_#11100f] transition-transform hover:-translate-y-1";
 
     const photo = document.createElement("img");
     photo.src = recipe.image;
     photo.alt = recipe.name;
     
-    photo.className = "h-52 w-full object-cover";
+    photo.className = "h-56 w-full border-b-[3px] border-[#11100f] object-cover sm:h-64";
 
     const details = document.createElement("div");
-    details.className = "space-y-4 p-4";
+    details.className = "space-y-5 p-5 sm:p-6";
 
     const name = document.createElement("h2");
     name.textContent = recipe.name;
-    name.className = "text-xl font-bold text-green-950";
+    name.className = "text-2xl font-black leading-tight text-[#11100f] sm:text-3xl";
 
     const badges = document.createElement("div");
-    badges.className = "flex flex-wrap gap-2";
+    badges.className = "flex flex-wrap gap-3";
 
     const cuisine = document.createElement("span");
     cuisine.textContent = "🌍" + recipe.cuisine;
     cuisine.className =
-      "rounded-full bg-orange-100 px-3 py-1 text-sm text-orange-800";
+      "rounded-full border-2 border-[#11100f] bg-[#ead2b9] px-4 py-2 text-sm font-bold text-[#11100f]";
 
     const difficulty = document.createElement("span");
     difficulty.textContent = "🧑‍🍳" + recipe.difficulty;
     difficulty.className =
-      "rounded-full bg-green-100 px-3 py-1 text-sm text-green-900";
+      "rounded-full bg-[#11100f] px-4 py-2 text-sm font-bold text-[#f8eee3]";
 
+    const footer = document.createElement("div");
+    footer.className = "flex items-center justify-between gap-3 pt-1";
     const prepTime = document.createElement("p");
     prepTime.textContent = `◷ ${recipe.prepTimeMinutes} min`;
-    prepTime.className = "text-gray-700";
+    prepTime.className = "flex items-center gap-2 text-lg font-bold text-[#45382f]";
+
+    // Add the visual delete control shown in the reference card design.
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.setAttribute("aria-label", `Supprimer ${recipe.name}`);
+    deleteButton.className = "grid h-14 w-14 shrink-0 place-items-center rounded-2xl border-[3px] border-[#11100f] bg-transparent text-[#11100f] transition hover:bg-[#b41113] hover:text-[#f8eee3]";
+    deleteButton.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-6 w-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M10 11v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg>`;
 
     badges.append(cuisine, difficulty);
-    details.append(name, badges, prepTime);
+    footer.append(prepTime, deleteButton);
+    details.append(name, badges, footer);
     card.append(photo, details);
     recipeList.append(card);
   });
@@ -51,11 +61,11 @@ export function displayRecipes(recipes) {
 export function popupform() {
   const div = document.createElement("div");
   div.className =
-    "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
-  div.id = "form";
+    "fixed inset-0 z-50 flex items-center justify-center bg-[#11100f]/70 p-4";
+  div.id = "formback";
   const modal = document.createElement("div");
   modal.className =
-    "relative w-full max-w-3xl rounded-3xl bg-white p-8 shadow-2xl sm:p-12";
+    "relative max-h-[90dvh] w-full max-w-4xl overflow-y-auto rounded-[2rem] border-[3px] border-[#11100f] bg-[#f8eee3] p-5 shadow-[6px_7px_0_#11100f] sm:p-12 sm:shadow-[9px_10px_0_#11100f]";
 
   const closeButton = document.createElement("button");
   closeButton.type = "button";
@@ -63,23 +73,31 @@ export function popupform() {
   closeButton.id = "close";
   closeButton.setAttribute("aria-label", "Fermer");
   closeButton.className =
-    "absolute right-6 top-5 text-4xl leading-none text-gray-600";
+    "absolute right-6 top-5 text-4xl leading-none text-[#11100f]";
 
   const title = document.createElement("h2");
   title.textContent = "Ajouter une recette";
-  title.className = "mb-8 text-3xl font-bold text-gray-900";
+  title.className = "mb-8 text-3xl font-black text-[#11100f]";
 
   const form = document.createElement("form");
   form.className = "space-y-5";
+  form.id = "rform"
 
+  // Wrap each control and its live validation message in a .champ container.
   const makeField = (labelText, input) => {
+    const box = document.createElement("div");
+    box.className = "champ";
     const label = document.createElement("label");
-    label.className = "block font-semibold text-gray-900";
+    label.className = "block font-bold text-[#11100f]";
     label.appendChild(document.createTextNode(labelText));
     input.className =
-      "mt-2 w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-lg font-normal outline-none focus:border-green-700";
+      "mt-2 w-full rounded-xl border-2 border-[#11100f] bg-[#fffaf3] px-4 py-3 text-lg font-normal outline-none focus:border-[#b41113]";
     label.appendChild(input);
-    return label;
+    const message = document.createElement("p");
+    message.className = "message hidden mt-1 text-sm";
+    message.setAttribute("aria-live", "polite");
+    box.append(label, message);
+    return box;
   };
 
   const nameInput = document.createElement("input");
@@ -117,6 +135,7 @@ export function popupform() {
   timeInput.type = "number";
   timeInput.name = "prepTimeMinutes";
   timeInput.min = "1";
+  timeInput.max = "300";
   timeInput.placeholder = "Ex. 45";
   timeInput.required = true;
   form.appendChild(makeField("Temps de préparation (min)", timeInput));
@@ -128,13 +147,14 @@ export function popupform() {
   cancelButton.type = "button";
   cancelButton.id = "cancel";
   cancelButton.textContent = "Annuler";
-  cancelButton.className = "rounded-lg px-5 py-3 font-semibold text-gray-700";
+  cancelButton.className = "rounded-full px-5 py-3 font-bold text-[#45382f]";
 
   const addButton = document.createElement("button");
   addButton.type = "submit";
+  addButton.id = 'ajouter'
   addButton.textContent = "Ajouter";
   addButton.className =
-    "rounded-lg bg-green-700 px-7 py-3 font-semibold text-white";
+    "rounded-full bg-[#b41113] px-7 py-3 font-bold text-[#f8eee3] hover:bg-[#11100f]";
 
   buttons.appendChild(cancelButton);
   buttons.appendChild(addButton);
@@ -155,17 +175,39 @@ export function showerror(error) {
   div.className =
     "col-span-full mx-auto flex min-h-[50vh] w-full max-w-2xl flex-col items-center justify-center gap-6 px-4 text-center sm:gap-8";
   const p = document.createElement("p");
-  p.className = "text-2xl font-semibold leading-relaxed text-[#718778] sm:text-4xl";
+  p.className = "text-3xl font-black leading-tight text-[#b41113] sm:text-5xl";
   p.textContent = error;
   const btn = document.createElement("button");
   btn.type = "button";
   btn.id = "btnrefresh"
   btn.className =
-    "w-full rounded-xl bg-[#17452f] px-8 py-4 text-xl font-semibold text-white transition hover:bg-[#123a27] focus:outline-none focus:ring-2 focus:ring-[#17452f] focus:ring-offset-2 sm:w-auto sm:text-2xl";
+    "w-full rounded-full bg-[#b41113] px-8 py-4 text-lg font-bold text-[#f8eee3] shadow-[4px_5px_0_#11100f] transition hover:translate-y-1 hover:bg-[#11100f] hover:shadow-[1px_2px_0_#11100f] focus:outline-none focus:ring-2 focus:ring-[#b41113] focus:ring-offset-2 sm:w-auto sm:text-xl";
   btn.textContent = "Réessayer";
 
   div.append(p,btn)
   recipeList.appendChild(div)
 
 
+}
+export function succedmsg() {
+  const toast = document.createElement("div");
+  toast.setAttribute("role", "status");
+  toast.className =
+    "fixed bottom-5 right-5 z-[100] flex max-w-[calc(100vw-2.5rem)] items-center gap-3 rounded-2xl border-2 border-[#788363] bg-[#e7eddc] px-5 py-4 text-[#40502e] shadow-[5px_6px_0_#11100f] sm:bottom-8 sm:right-8";
+
+  const icon = document.createElement("span");
+  icon.setAttribute("aria-hidden", "true");
+  icon.className =
+    "grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#788363] text-xl font-black text-white";
+  icon.textContent = "✓";
+
+  const message = document.createElement("p");
+  message.className = "font-bold";
+  message.textContent = "Recette ajoutée avec succès !";
+
+  toast.appendChild(icon);
+  toast.appendChild(message);
+  document.body.appendChild(toast);
+
+  window.setTimeout(() => toast.remove(), 2000);
 }
