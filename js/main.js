@@ -1,5 +1,5 @@
 import { getdata, searchdata, postRecipe } from "./apicalls.js";
-import { displayRecipes, popupform, search, showerror } from "./display.js";
+import { displayRecipes, popupform, search, showerror, succedmsg } from "./display.js";
 import { getFields, validateField } from "./validation.js";
 let allrecettes = [];
 
@@ -16,13 +16,10 @@ document.querySelector("#addbtn").addEventListener("click", (e) => {
   e.preventDefault;
   popupform();
   const forma = document.querySelector("#rform");
-  // const form = document.querySelector("#form");
   const formaback = document.querySelector("#formback");
   forma.noValidate = true;
-  // Build the configured field list once so live and submit checks share rules.
   const fields = getFields(forma);
 
-  // Recheck fields while typing and when a select/input commits a change.
   fields.forEach((field) => {
     field.input.addEventListener("input", () => validateField(field));
     field.input.addEventListener("change", () => validateField(field));
@@ -33,7 +30,6 @@ document.querySelector("#addbtn").addEventListener("click", (e) => {
 
     e.preventDefault();
 
-    // Check all configured fields and focus the first one that is invalid.
     const fieldsValid = fields.map(validateField);
     const firstInvalid = fieldsValid.indexOf(false);
     if (firstInvalid !== -1) {
@@ -52,12 +48,17 @@ document.querySelector("#addbtn").addEventListener("click", (e) => {
 
     try {
       await postRecipe(recipe);
+      allrecettes.unshift(recipe);
+      displayRecipes(allrecettes);
+      formaback.remove();
+      succedmsg();
     } catch (error) {
-      console.log(error);
+      console.error("Could not add recipe:", error);
     } finally {
       submit.disabled = false;
       submit.textContent = "Ajouter";
     }
+
   });
 
   document.querySelector("#close").addEventListener("click", () => {

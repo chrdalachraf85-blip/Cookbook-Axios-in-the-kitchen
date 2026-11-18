@@ -24,7 +24,6 @@ export function getFields(form) {
   ];
 }
 
-// Update the field's visual state and message, and return whether it is valid.
 export function validateField(field) {
   const value = field.input.value.trim();
   const valid = field.isValid
@@ -34,10 +33,10 @@ export function validateField(field) {
   const message = box.querySelector(".message");
 
   // Apply Tailwind color utilities directly instead of status-name classes.
-  field.input.classList.remove("border-green-500", "border-red-500");
-  message.classList.remove("text-green-500", "text-red-500");
-  field.input.classList.add(valid ? "border-green-500" : "border-red-500");
-  message.classList.add(valid ? "text-green-500" : "text-red-500");
+  field.input.classList.remove("border-[#788363]", "border-red-500");
+  message.classList.remove("text-[#788363]", "text-red-500");
+  field.input.classList.add(valid ? "border-[#788363]" : "border-red-500");
+  message.classList.add(valid ? "text-[#788363]" : "text-red-500");
   message.classList.remove("hidden");
   message.textContent = valid ? "Valide." : field.errorMessage;
   field.input.setAttribute("aria-invalid", String(!valid));
