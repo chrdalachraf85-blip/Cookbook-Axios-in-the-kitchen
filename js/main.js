@@ -1,16 +1,29 @@
 import { getdata, searchdata, postRecipe, dltrecipe } from "./apicalls.js";
-import { displayRecipes, popupform, search, showerror, succedmsg, deletecheck } from "./display.js";
+import {
+  displayRecipes,
+  popupform,
+  search,
+  showerror,
+  succedmsg,
+  deletecheck,
+} from "./display.js";
 import { getFields, validateField } from "./validation.js";
 let allrecettes = [];
 
+const recipeCount =  document.querySelector("#recipe-count")
+recipeCount.textContent = "Chargement des recettes..."
 getdata()
-  .then((data) => {
+.then((data) => {
     allrecettes = data.recipes;
-    displayRecipes(data.recipes);
+    
   })
   .catch(() => {
-    showerror("Could not load recipes");
-  });
+    showerror("Impossible de charger les recettes.");
+  
+  })
+  .finally(()=>{
+    displayRecipes(allrecettes);
+  })
 
 document.querySelector("#addbtn").addEventListener("click", (e) => {
   e.preventDefault;
@@ -44,21 +57,22 @@ document.querySelector("#addbtn").addEventListener("click", (e) => {
       prepTimeMinutes: Number(forma.elements.prepTimeMinutes.value),
     };
     submit.disabled = true;
-    submit.textContent = "sending...";
+    submit.textContent = "Envoi en cours...";
+
 
     try {
       await postRecipe(recipe);
-      allrecettes.unshift(recipe);+0
+      
+      allrecettes.unshift(recipe);
       displayRecipes(allrecettes);
       formaback.remove();
       succedmsg();
     } catch (error) {
-      console.error("Could not add recipe:", error);
+      console.error("Impossible d’ajouter la recette :", error);
     } finally {
       submit.disabled = false;
       submit.textContent = "Ajouter";
     }
-
   });
 
   document.querySelector("#close").addEventListener("click", () => {
@@ -79,12 +93,13 @@ document
       displayRecipes(allrecettes);
       return;
     }
-
+    recipeCount.textContent = "Recherche en cours...";
     searchdata(input)
+    
       .then((data) => {
         displayRecipes(data.recipes);
         if (!data.recipes || data.recipes.length === 0) {
-          showerror("No Recipes Found");
+          showerror("Aucune recette trouvée.");
           document
             .querySelector("#btnrefresh")
             .addEventListener("click", () => {
@@ -96,23 +111,36 @@ document
         }
       })
       .catch((error) => {
-        showerror(error);
-        console.error("Could not search recipes:", error);
+        showerror("Impossible de rechercher les recettes.");
+        console.error("Impossible de rechercher les recettes :", error);
       });
   });
-  ///////////delete
+///////////delete
+const recipeList = document.querySelector("#recipe-list");
+recipeList.addEventListener("click", async (e) => {
+  const btn = e.target.closest(`[data-role="delete"]`);
+  if (!btn) return;
 
+  deletecheck();
+  const dtbtn = document.querySelector("#delete");
+  dtbtn.addEventListener("click", async () => {
+    const res = await dltrecipe(btn.dataset.deleteId);
+    res >= 200 && (await res) < 300
+      ? recipeList
+          .querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`)
+          .remove()
+      : (recipeList.textContent = "Échec de la suppression de la recette.");
+    allrecettes = allrecettes.filter(
+      (recipe) => String(recipe.id) !== String(btn.dataset.deleteId),
+    );
+    displayRecipes(allrecettes);
+    // document.querySelector("#recipe-count").textContent= `${allrecettes.length} recetts`
+    document.querySelector("#backdrop").remove();
+  });
 
-
-
-
-
-
-
-
-    // const res = await dltrecipe(btn.dataset.deleteId)
-    // res >= 200 && await res < 300 ? recipeList.querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`).remove() : recipeList.textContent = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    // const article = recipeList.querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`)
-    // article.remove()
-  })
+  // const res = await dltrecipe(btn.dataset.deleteId)
+  // res >= 200 && await res < 300 ? recipeList.querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`).remove() : recipeList.textContent = "Échec de la suppression de la recette."
+  // const article = recipeList.querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`)
+  // article.remove()
+});
 ////////////

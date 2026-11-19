@@ -34,7 +34,7 @@ export function displayRecipes(recipes) {
       "rounded-full border-2 border-[#11100f] bg-[#ead2b9] px-4 py-2 text-sm font-bold text-[#11100f]";
 
     const difficulty = document.createElement("span");
-    difficulty.textContent = "🧑‍🍳" + recipe.difficulty;
+    difficulty.textContent = "🧑‍🍳" + ({ Easy: "Facile", Medium: "Moyenne", Hard: "Difficile" }[recipe.difficulty] ?? recipe.difficulty);
     difficulty.className =
       "rounded-full bg-[#11100f] px-4 py-2 text-sm font-bold text-[#f8eee3]";
 
@@ -46,6 +46,7 @@ export function displayRecipes(recipes) {
 
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
+    deleteButton.dataset.role = "delete"
     deleteButton.dataset.deleteId = recipe.id
     deleteButton.setAttribute("aria-label", `Supprimer ${recipe.name}`);
     deleteButton.className = "grid h-14 w-14 shrink-0 place-items-center rounded-2xl border-[3px] border-[#11100f] bg-transparent text-[#11100f] transition hover:bg-[#b41113] hover:text-[#f8eee3]";
@@ -213,6 +214,10 @@ export function succedmsg() {
   window.setTimeout(() => toast.remove(), 2000);
 }
 
+
+
+
+
 export function deletecheck(){
   const backdrop = document.createElement("div");
   backdrop.id ="backdrop"
@@ -230,7 +235,7 @@ export function deletecheck(){
   const closeButton = document.createElement("button");
   closeButton.type = "button";
   closeButton.textContent = "×";
-  closeButton.setAttribute("aria-label", "Close");
+  closeButton.setAttribute("aria-label", "Fermer");
   closeButton.className =
     "absolute right-5 top-3 text-4xl leading-none text-[#11100f] hover:text-[#b41113]";
   closeButton.addEventListener("click", () => backdrop.remove());
@@ -245,18 +250,18 @@ export function deletecheck(){
   const title = document.createElement("h2");
   title.id = "deletecheck-title";
   title.className = "mb-3 text-center text-2xl font-black text-[#11100f] sm:text-3xl";
-  title.textContent = "Are you sure?";
+  title.textContent = "Confirmer la suppression ?";
 
   const message = document.createElement("p");
   message.className = "mb-8 text-center text-lg font-semibold text-[#45382f]";
-  message.textContent = "Do you want to delete this recipes";
+  message.textContent = "Voulez-vous supprimer cette recette ?";
 
   const actions = document.createElement("div");
   actions.className = "flex justify-center gap-3 sm:gap-4";
 
   const cancelButton = document.createElement("button");
   cancelButton.type = "button";
-  cancelButton.textContent = "Cancel";
+  cancelButton.textContent = "Annuler";
   cancelButton.className =
     "rounded-full px-5 py-3 font-bold text-[#45382f] hover:bg-[#ead2b9]";
   cancelButton.addEventListener("click", () => backdrop.remove());
@@ -264,7 +269,7 @@ export function deletecheck(){
   const deleteButton = document.createElement("button");
   deleteButton.type = "button";
   deleteButton.id = "delete"
-  deleteButton.textContent = "Delete";
+  deleteButton.textContent = "Supprimer";
   deleteButton.className =
     "rounded-full bg-[#b41113] px-7 py-3 font-bold text-[#f8eee3] hover:bg-[#11100f]";
 
