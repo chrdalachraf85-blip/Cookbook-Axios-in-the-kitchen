@@ -4,22 +4,22 @@ export function getFields(form) {
     {
       input: form.elements.name,
       regex: /^[\p{L}][\p{L} '\u2019-]{0,59}$/u,
-      errorMessage: "Use 1–60 letters, spaces, apostrophes, or hyphens. Numbers are not allowed.",
+      errorMessage: "Saisissez entre 1 et 60 lettres, espaces, apostrophes ou traits d’union. Les chiffres ne sont pas autorisés.",
     },
     {
       input: form.elements.cuisine,
       regex: /^[\p{L}][\p{L} '\u2019-]*$/u,
-      errorMessage: "Use letters, spaces, apostrophes, or hyphens.",
+      errorMessage: "Utilisez des lettres, des espaces, des apostrophes ou des traits d’union.",
     },
     {
       input: form.elements.difficulty,
       isValid: (value) => ["Easy", "Medium", "Hard"].includes(value),
-      errorMessage: "Choose a difficulty.",
+      errorMessage: "Choisissez un niveau de difficulté.",
     },
     {
       input: form.elements.prepTimeMinutes,
       isValid: (value) => /^\d+$/.test(value) && Number(value) >= 1 && Number(value) <= 300,
-      errorMessage: "Enter a whole number from 1 to 300 minutes.",
+      errorMessage: "Saisissez un nombre entier entre 1 et 300 minutes.",
     },
   ];
 }

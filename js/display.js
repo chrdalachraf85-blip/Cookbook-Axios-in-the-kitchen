@@ -10,7 +10,8 @@ export function displayRecipes(recipes) {
     const card = document.createElement("article");
     card.className =
       "overflow-hidden rounded-[2rem] border-[3px] border-[#11100f] bg-[#f8eee3] shadow-[8px_9px_0_#11100f] transition-transform hover:-translate-y-1";
-
+///////////////////////
+    card.dataset.deleteId = recipe.id
     const photo = document.createElement("img");
     photo.src = recipe.image;
     photo.alt = recipe.name;
@@ -33,7 +34,7 @@ export function displayRecipes(recipes) {
       "rounded-full border-2 border-[#11100f] bg-[#ead2b9] px-4 py-2 text-sm font-bold text-[#11100f]";
 
     const difficulty = document.createElement("span");
-    difficulty.textContent = "🧑‍🍳" + recipe.difficulty;
+    difficulty.textContent = "🧑‍🍳" + ({ Easy: "Facile", Medium: "Moyenne", Hard: "Difficile" }[recipe.difficulty] ?? recipe.difficulty);
     difficulty.className =
       "rounded-full bg-[#11100f] px-4 py-2 text-sm font-bold text-[#f8eee3]";
 
@@ -43,9 +44,10 @@ export function displayRecipes(recipes) {
     prepTime.textContent = `◷ ${recipe.prepTimeMinutes} min`;
     prepTime.className = "flex items-center gap-2 text-lg font-bold text-[#45382f]";
 
-    // Add the visual delete control shown in the reference card design.
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
+    deleteButton.dataset.role = "delete"
+    deleteButton.dataset.deleteId = recipe.id
     deleteButton.setAttribute("aria-label", `Supprimer ${recipe.name}`);
     deleteButton.className = "grid h-14 w-14 shrink-0 place-items-center rounded-2xl border-[3px] border-[#11100f] bg-transparent text-[#11100f] transition hover:bg-[#b41113] hover:text-[#f8eee3]";
     deleteButton.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-6 w-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M10 11v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg>`;
@@ -211,3 +213,70 @@ export function succedmsg() {
 
   window.setTimeout(() => toast.remove(), 2000);
 }
+
+
+
+
+
+export function deletecheck(){
+  const backdrop = document.createElement("div");
+  backdrop.id ="backdrop"
+  backdrop.className =
+    "fixed inset-0 z-50 flex items-center justify-center bg-[#11100f]/70 p-4";
+  backdrop.setAttribute("role", "presentation");
+
+  const modal = document.createElement("section");
+  modal.className =
+    "relative w-full max-w-md rounded-[2rem] border-[3px] border-[#11100f] bg-[#f8eee3] p-7 shadow-[8px_9px_0_#11100f] sm:p-9";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "deletecheck-title");
+
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.textContent = "×";
+  closeButton.setAttribute("aria-label", "Fermer");
+  closeButton.className =
+    "absolute right-5 top-3 text-4xl leading-none text-[#11100f] hover:text-[#b41113]";
+  closeButton.addEventListener("click", () => backdrop.remove());
+
+  const icon = document.createElement("div");
+  icon.className =
+    "mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl border-[3px] border-[#11100f] bg-[#ead2b9] text-[#b41113]";
+  icon.setAttribute("aria-hidden", "true");
+  icon.innerHTML =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-8 w-8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M10 11v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg>';
+
+  const title = document.createElement("h2");
+  title.id = "deletecheck-title";
+  title.className = "mb-3 text-center text-2xl font-black text-[#11100f] sm:text-3xl";
+  title.textContent = "Confirmer la suppression ?";
+
+  const message = document.createElement("p");
+  message.className = "mb-8 text-center text-lg font-semibold text-[#45382f]";
+  message.textContent = "Voulez-vous supprimer cette recette ?";
+
+  const actions = document.createElement("div");
+  actions.className = "flex justify-center gap-3 sm:gap-4";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.type = "button";
+  cancelButton.textContent = "Annuler";
+  cancelButton.className =
+    "rounded-full px-5 py-3 font-bold text-[#45382f] hover:bg-[#ead2b9]";
+  cancelButton.addEventListener("click", () => backdrop.remove());
+
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.id = "delete"
+  deleteButton.textContent = "Supprimer";
+  deleteButton.className =
+    "rounded-full bg-[#b41113] px-7 py-3 font-bold text-[#f8eee3] hover:bg-[#11100f]";
+
+  actions.append(cancelButton, deleteButton);
+  modal.append(closeButton, icon, title, message, actions);
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+  return { backdrop, deleteButton, cancelButton };
+}
+
