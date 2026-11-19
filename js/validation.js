@@ -1,4 +1,3 @@
-// Describe each form control once, following the field-config pattern.
 export function getFields(form) {
   return [
     {
@@ -32,7 +31,7 @@ export function validateField(field) {
   const box = field.input.closest(".champ");
   const message = box.querySelector(".message");
 
-  // Apply Tailwind color utilities directly instead of status-name classes.
+  
   field.input.classList.remove("border-[#788363]", "border-red-500");
   message.classList.remove("text-[#788363]", "text-red-500");
   field.input.classList.add(valid ? "border-[#788363]" : "border-red-500");

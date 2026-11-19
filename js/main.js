@@ -10,20 +10,27 @@ import {
 import { getFields, validateField } from "./validation.js";
 let allrecettes = [];
 
-const recipeCount =  document.querySelector("#recipe-count")
-recipeCount.textContent = "Chargement des recettes..."
+const recipeCount = document.querySelector("#recipe-count");
+recipeCount.textContent = "Chargement des recettes...";
 getdata()
-.then((data) => {
+  .then((data) => {
     allrecettes = data.recipes;
-    
-  })
-  .catch(() => {
-    showerror("Impossible de charger les recettes.");
-  
-  })
-  .finally(()=>{
     displayRecipes(allrecettes);
   })
+  .catch((error) => {
+    const status = error.response?.status;
+    let message = "Impossible de charger les recettes.";
+    recipeCount.textContent = "";
+    if (status === 404) {
+      message = "Cette recette est introuvable.";
+    } else if (status === 429) {
+      message = "Trop de requêtes. Veuillez patienter avant de réessayer.";
+    } else if (status >= 500) {
+      message =
+        "Le serveur rencontre un problème. Veuillez réessayer plus tard.";
+    }
+    showerror(message);
+  });
 
 document.querySelector("#addbtn").addEventListener("click", (e) => {
   e.preventDefault;
@@ -59,16 +66,23 @@ document.querySelector("#addbtn").addEventListener("click", (e) => {
     submit.disabled = true;
     submit.textContent = "Envoi en cours...";
 
-
     try {
       await postRecipe(recipe);
-      
+
       allrecettes.unshift(recipe);
       displayRecipes(allrecettes);
       formaback.remove();
       succedmsg();
     } catch (error) {
-      console.error("Impossible d’ajouter la recette :", error);
+      const status = error.response?.status;
+      let message = "Une erreur inattendue s’est produite.";
+      if (status === 404) {
+        message = "Impossible d’ajouter la recette. Le serveur est introuvable.";
+      } else if (status >= 500) {
+        message = "Le serveur rencontre un problème. Veuillez réessayer plus tard.";
+      }
+
+      showerror(message);
     } finally {
       submit.disabled = false;
       submit.textContent = "Ajouter";
@@ -95,7 +109,6 @@ document
     }
     recipeCount.textContent = "Recherche en cours...";
     searchdata(input)
-    
       .then((data) => {
         displayRecipes(data.recipes);
         if (!data.recipes || data.recipes.length === 0) {
@@ -111,8 +124,18 @@ document
         }
       })
       .catch((error) => {
-        showerror("Impossible de rechercher les recettes.");
-        console.error("Impossible de rechercher les recettes :", error);
+        const status = error.response?.status;
+        let message = "Impossible de charger les recettes.";
+        recipeCount.textContent = "";
+        if (status === 404) {
+          message = "Cette recette est introuvable.";
+        } else if (status === 429) {
+          message = "Trop de requêtes. Veuillez patienter avant de réessayer.";
+        } else if (status >= 500) {
+          message =
+            "Le serveur rencontre un problème. Veuillez réessayer plus tard.";
+        }
+        showerror(message);
       });
   });
 ///////////delete
@@ -124,16 +147,34 @@ recipeList.addEventListener("click", async (e) => {
   deletecheck();
   const dtbtn = document.querySelector("#delete");
   dtbtn.addEventListener("click", async () => {
-    const res = await dltrecipe(btn.dataset.deleteId);
-    res >= 200 && (await res) < 300
-      ? recipeList
-          .querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`)
-          .remove()
-      : (recipeList.textContent = "Échec de la suppression de la recette.");
-    allrecettes = allrecettes.filter(
-      (recipe) => String(recipe.id) !== String(btn.dataset.deleteId),
-    );
-    displayRecipes(allrecettes);
+    try {
+      const res = await dltrecipe(btn.dataset.deleteId);
+      res >= 200 && (await res) < 300
+        ? recipeList
+            .querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`)
+            .remove()
+        : (recipeList.textContent = "Échec de la suppression de la recette.");
+      allrecettes = allrecettes.filter(
+        (recipe) => String(recipe.id) !== String(btn.dataset.deleteId),
+      );
+      displayRecipes(allrecettes);
+      
+    } catch (error) {
+      const status = error.response?.status;
+      let message = "Impossible de supprimer la recette.";
+
+      if (status === 404) {
+        message = "Cette recette est introuvable ou a déjà été supprimée.";
+      } else if (status >= 500) {
+        message = "Le serveur rencontre un problème. Veuillez réessayer plus tard.";
+      } else if (!error.response) {
+        message = "Impossible de joindre le serveur. Vérifiez votre connexion.";
+      }
+
+      showerror(message);
+      console.error("Échec de la suppression de la recette :", error);
+    }
+    
     // document.querySelector("#recipe-count").textContent= `${allrecettes.length} recetts`
     document.querySelector("#backdrop").remove();
   });
