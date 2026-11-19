@@ -114,5 +114,5 @@ Add the screenshots to the `screenshots/` folder with the matching filenames bel
 ## Notes
 
 - Tailwind CSS is loaded from its browser CDN in `index.html`.
-- Axios is loaded from the installed `node_modules/axios` bundle.
+- Axios is loaded from jsDelivr at runtime, so the static deployment does not need to publish `node_modules`.
 - There is no automated test script configured in `package.json` yet.
