@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookbook — Toutes les recettes</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="node_modules/axios/dist/axios.min.js"></script>
+    <style>
+        #recipe-search:-webkit-autofill,
+        #recipe-search:-webkit-autofill:hover,
+        #recipe-search:-webkit-autofill:focus,
+        #recipe-search:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px #f8eee3 inset;
+            -webkit-text-fill-color: #11100f;
+            transition: background-color 9999s ease-out 0s;
+        }
+
+        #formback > div {
+            scrollbar-width: none;
+        }
+
+        #formback > div::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#f1e1ce] text-[#11100f] antialiased">
+    <header class="border-b border-black/10 bg-[#f1e1ce]">
+        <div class="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 py-4 sm:px-10 sm:py-5 lg:px-16">
+            <h1 class="flex items-center gap-2 text-2xl font-black tracking-tight sm:gap-3 sm:text-4xl"><span aria-hidden="true" class="inline-block h-6 w-6 shrink-0 rounded-full border-[7px] border-[#b41113] sm:h-9 sm:w-9 sm:border-[9px]"></span>Cookbook</h1>
+            <button type="button" id="addbtn" class="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-[#11100f] px-3 py-2 text-xs font-bold text-[#f7eadb] transition hover:bg-[#b41113] sm:gap-3 sm:px-8 sm:py-4 sm:text-lg">
+                <span aria-hidden="true" class="text-xl leading-none sm:text-2xl">+</span>
+                <span>Proposer une recette</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="mx-auto grid max-w-[1600px] items-center gap-10 px-5 py-12 sm:px-10 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:px-16 lg:py-24">
+            <div class="py-4">
+                <p class="mb-6 text-sm font-black uppercase tracking-[0.45em] sm:text-lg">Des recettes</p>
+                <h2 class="max-w-3xl text-6xl font-black uppercase leading-[0.86] tracking-[-0.06em] text-[#b41113] sm:text-7xl md:text-8xl">Faciles<br><span class="text-[#11100f]">à table</span></h2>
+                <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+                    <p class="text-lg tracking-wide sm:text-2xl">Nouvelle sélection <span class="text-[#b41113]">·</span> des idées à cuisiner</p>
+                    <a href="#recipe-list" class="inline-flex items-center gap-5 rounded-full bg-[#b41113] px-7 py-4 text-lg font-bold text-[#f7eadb] shadow-[0_5px_0_#11100f] transition hover:translate-y-1 hover:shadow-[0_1px_0_#11100f] sm:px-9 sm:text-xl">Voir les recettes <span aria-hidden="true" class="text-2xl">→</span></a>
+                </div>
+            </div>
+            <div aria-hidden="true" class="relative mx-auto aspect-square w-full max-w-[560px] overflow-hidden rounded-[3rem] border-[3px] border-[#11100f] bg-[#b41113] shadow-[10px_12px_0_#11100f]">
+                <span class="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-[#11100f]"></span>
+                <span class="absolute -right-7 top-8 h-24 w-24 rounded-full bg-[#f1e1ce]"></span>
+                <span class="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-[#11100f]"></span>
+                <span class="absolute left-1/2 top-1/2 flex aspect-square w-[72%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[22px] border-[#dba96f] bg-[#f1e1ce] shadow-[inset_0_0_0_18px_#c63d2d] sm:border-[30px]">
+                    <span class="relative block aspect-square w-[74%] rounded-full bg-[#c63d2d]">
+                        <i class="absolute left-[18%] top-[25%] h-10 w-12 rotate-[-25deg] rounded-full bg-[#f7eadb] after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-7 after:-translate-x-1/2 after:-translate-y-1/2 after:rotate-[-15deg] after:rounded-full after:bg-[#11100f]"></i>
+                        <i class="absolute right-[18%] top-[22%] h-10 w-12 rotate-[20deg] rounded-full bg-[#f7eadb] after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-7 after:-translate-x-1/2 after:-translate-y-1/2 after:rotate-[15deg] after:rounded-full after:bg-[#11100f]"></i>
+                        <i class="absolute bottom-[20%] left-[25%] h-9 w-10 rotate-[-35deg] rounded-full bg-[#f7eadb] after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-6 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[#11100f]"></i>
+                        <i class="absolute bottom-[18%] right-[21%] h-9 w-10 rotate-[30deg] rounded-full bg-[#f7eadb] after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-6 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[#11100f]"></i>
+                        <i class="absolute left-1/2 top-[10%] h-8 w-8 -translate-x-1/2 rounded-full bg-[#f7eadb]"></i>
+                        <i class="absolute bottom-[10%] left-1/2 h-12 w-14 -translate-x-1/2 rounded-full bg-[#f7eadb] after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-8 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[#11100f]"></i>
+                    </span>
+                </span>
+            </div>
+        </section>
+
+        <div aria-hidden="true" class="overflow-hidden border-y-2 border-[#11100f] bg-[#11100f] py-4 text-[#f7eadb]">
+            <p class="whitespace-nowrap text-center text-xl font-black uppercase tracking-[0.18em] sm:text-3xl">Cookbook　·　Cuisinez　·　Partagez　·　Savourez　·　Cookbook　·　Cuisinez</p>
+        </div>
+
+        <section class="mx-auto max-w-[1600px] px-6 py-14 sm:px-10 sm:py-20 lg:px-16">
+            <div class="mb-9 flex items-center gap-4 sm:gap-6">
+                <span aria-hidden="true" class="h-[3px] flex-1 bg-[#11100f]"></span>
+                <h2 class="text-center text-2xl font-black uppercase tracking-[-0.04em] sm:text-5xl md:text-6xl">Toutes les <span class="text-[#b41113]">recettes</span></h2>
+                <span aria-hidden="true" class="h-[3px] flex-1 bg-[#11100f]"></span>
+            </div>
+
+            <form id="recipe-search-form" class="mx-auto flex max-w-5xl items-center gap-2 rounded-full border-2 border-[#11100f] bg-[#f8eee3] p-2 shadow-[4px_5px_0_#11100f] sm:gap-5 sm:p-3 sm:shadow-[5px_7px_0_#11100f]">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-3 h-6 w-6 shrink-0 text-[#11100f] sm:ml-5 sm:h-8 sm:w-8">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m16 16 4 4"></path>
+                </svg>
+                <input id="recipe-search" type="search" aria-label="Rechercher une recette" placeholder="Rechercher une recette..." class="w-full min-w-0 bg-transparent text-base text-[#11100f] outline-none focus:bg-transparent focus:text-[#11100f] focus:ring-0 selection:bg-[#b41113] selection:text-[#f8eee3] placeholder:text-black/50 sm:text-xl">
+                <button type="submit" class="shrink-0 rounded-full bg-[#b41113] px-4 py-3 text-xs font-bold text-[#f7eadb] transition hover:bg-[#11100f] sm:px-8 sm:py-4 sm:text-lg">Rechercher</button>
+            </form>
+            <p id="recipe-count" class="mt-6 text-center text-lg font-semibold text-[#5c4537]"></p>
+
+            <section id="recipe-list" aria-label="Liste des recettes" class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"></section>
+            <p id="empty-message" class="hidden py-12 text-center text-lg text-[#5c4537]">Aucune recette trouvée.</p>
+        </section>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
+
