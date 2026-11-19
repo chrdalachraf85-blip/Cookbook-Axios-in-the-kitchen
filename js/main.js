@@ -1,5 +1,5 @@
-import { getdata, searchdata, postRecipe } from "./apicalls.js";
-import { displayRecipes, popupform, search, showerror, succedmsg } from "./display.js";
+import { getdata, searchdata, postRecipe, dltrecipe } from "./apicalls.js";
+import { displayRecipes, popupform, search, showerror, succedmsg, deletecheck } from "./display.js";
 import { getFields, validateField } from "./validation.js";
 let allrecettes = [];
 
@@ -48,7 +48,7 @@ document.querySelector("#addbtn").addEventListener("click", (e) => {
 
     try {
       await postRecipe(recipe);
-      allrecettes.unshift(recipe);
+      allrecettes.unshift(recipe);+0
       displayRecipes(allrecettes);
       formaback.remove();
       succedmsg();
@@ -100,3 +100,19 @@ document
         console.error("Could not search recipes:", error);
       });
   });
+  ///////////delete
+
+
+
+
+
+
+
+
+
+    // const res = await dltrecipe(btn.dataset.deleteId)
+    // res >= 200 && await res < 300 ? recipeList.querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`).remove() : recipeList.textContent = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    // const article = recipeList.querySelector(`[data-delete-id = "${btn.dataset.deleteId}"]`)
+    // article.remove()
+  })
+////////////

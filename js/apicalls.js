@@ -18,3 +18,7 @@ export async function postRecipe(object) {
   console.log("Created post:", res.data);
 
 }
+export async function dltrecipe(id) {
+  const res = await api.delete(`/recipes/${id}`)
+  return res.status
+}
