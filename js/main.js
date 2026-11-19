@@ -104,7 +104,7 @@ document
 
     const input = search.value.trim();
     if (!input) {
-      displayRecipes(allrecettes);
+      showerror("Veuillez saisir le nom d’une recette avant de lancer la recherche.")
       return;
     }
     recipeCount.textContent = "Recherche en cours...";
@@ -112,6 +112,7 @@ document
       .then((data) => {
         displayRecipes(data.recipes);
         if (!data.recipes || data.recipes.length === 0) {
+          
           showerror("Aucune recette trouvée.");
           document
             .querySelector("#btnrefresh")
@@ -172,7 +173,7 @@ recipeList.addEventListener("click", async (e) => {
       }
 
       showerror(message);
-      console.error("Échec de la suppression de la recette :", error);
+     
     }
     
     // document.querySelector("#recipe-count").textContent= `${allrecettes.length} recetts`

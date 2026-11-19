@@ -173,6 +173,8 @@ export function popupform() {
 export const search = document.querySelector("#recipe-search");
 
 export function showerror(error) {
+  recipeCount.textContent = "";
+  recipeList.replaceChildren();
   const div = document.createElement("div");
   div.className =
     "col-span-full mx-auto flex min-h-[50vh] w-full max-w-2xl flex-col items-center justify-center gap-6 px-4 text-center sm:gap-8";
